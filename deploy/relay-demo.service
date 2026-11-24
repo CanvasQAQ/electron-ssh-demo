@@ -1,0 +1,16 @@
+[Unit]
+Description=Relay SSH demo (loopback only)
+
+[Service]
+Type=simple
+WorkingDirectory=%h/relay-ssh-demo
+Environment=PORT=18765
+Environment=DEMO_VERSION_FILE=%h/relay-ssh-demo/version.txt
+ExecStart=/usr/bin/node %h/relay-ssh-demo/server/server.cjs
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

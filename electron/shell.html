@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'">
+  <title>Connect to a host</title>
+  <link rel="stylesheet" href="shell.css">
+  <script src="shell.js" defer></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <main id="connection-page">
+    <header><h1>Connect to a host</h1></header>
+    <form id="connect-form">
+      <div class="connect-row">
+        <div class="host-field"><label for="host">Host</label><input id="host" name="host" placeholder="Hostname or IP address" autocomplete="off" spellcheck="false" required></div>
+        <div class="path-field"><label for="path">Project path</label><input id="path" name="path" placeholder="/path/to/project" autocomplete="off" spellcheck="false" maxlength="4096" required></div>
+        <div class="user-field"><label for="user">User <span>optional</span></label><input id="user" name="user" placeholder="Local account" autocomplete="off" spellcheck="false"></div>
+      </div>
+      <details id="advanced">
+        <summary>Connection settings</summary>
+        <div class="settings">
+          <label for="mode">Mode</label><select id="mode"><option value="ssh">SSH</option><option value="local">Local demo</option></select>
+          <label for="ssh-port">SSH port</label><input id="ssh-port" type="number" min="1" max="65535" value="22" required>
+          <label for="port">Service port</label><input id="port" type="number" min="1" max="65535" value="18765" required>
+          <label class="check"><input id="start-service" type="checkbox" checked>Start service automatically</label>
+        </div>
+      </details>
+      <div class="form-actions">
+        <button id="connect" class="primary" type="submit"><span id="connect-label">Connect</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div id="progress" role="status" aria-live="polite" hidden><span id="progress-text"></span></div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+    <section id="history" hidden><h2>Recent connections</h2><div id="history-list"></div></section>
+  </main>
+</body>
+</html>

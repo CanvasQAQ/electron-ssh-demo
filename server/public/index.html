@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Relay Workspace · v__VERSION__</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-version="__VERSION__">
+  <header><h1>Workspace</h1><span id="page-version">v__VERSION__</span></header>
+  <main>
+    <section class="counter" aria-labelledby="counter-title">
+      <h2 id="counter-title">Local counter</h2>
+      <output id="count">00</output>
+      <button id="increment">+1</button>
+      <div class="render-state"><div class="motion-demo" aria-hidden="true"><span></span></div><span id="frames">— fps</span></div>
+    </section>
+    <section class="request" aria-labelledby="request-title">
+      <h2 id="request-title">API request</h2>
+      <div class="delay-row"><label for="delay">Delay</label><output><span id="delay-value">3.0</span> s</output></div>
+      <input id="delay" type="range" min="0" max="10000" step="500" value="3000" aria-label="Simulated API delay">
+      <div class="request-actions"><button id="request" class="primary">Send request</button><span id="request-state" role="status">Ready</span></div>
+      <section class="result" aria-label="Response">
+        <h3>Response</h3><p id="result-title">—</p><code id="result-code">GET /api/report</code>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

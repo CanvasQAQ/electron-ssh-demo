@@ -1,0 +1,23 @@
+node_modules/
+work/
+outputs/
+.DS_Store
+*.log
+
+# Local credentials, profiles, and environment overrides
+.env
+.env.*
+!.env.example
+.npmrc
+.ssh/
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+connections.json
+connections.json.tmp
+playwright-report/
+test-results/

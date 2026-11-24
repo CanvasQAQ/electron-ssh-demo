@@ -1,0 +1,62 @@
+:root {
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  font-size: 14px; color: #ededef; background: #101114;
+  --muted: #9a9da7; --line: #2b2d34; --focus: #7e9ff4;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+header { display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 32px; border-bottom: 1px solid var(--line); }
+h1 { font-size: 14px; font-weight: 500; margin: 0; }
+#page-version { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; color: var(--muted); }
+main { display: grid; grid-template-columns: 260px minmax(0, 1fr); max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+h2 { font-size: 14px; font-weight: 500; margin: 0 0 32px; }
+.counter { padding-right: 40px; border-right: 1px solid var(--line); }
+#count { display: block; font-size: 56px; line-height: 1; font-weight: 400; font-variant-numeric: tabular-nums; margin: 0 0 32px; }
+button { font: inherit; font-size: 13px; min-height: 40px; padding: 8px 20px; border: 1px solid #34363f; border-radius: 6px; background: #1d1f25; color: #ededef; cursor: pointer; transition: background 140ms; }
+button:hover { background: #292c34; }
+button:disabled { opacity: .55; cursor: default; }
+button.primary { background: #e7e8eb; color: #17181c; border-color: #e7e8eb; }
+button.primary:hover { background: #fff; }
+#increment { width: 100%; }
+.render-state { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
+#frames { font-size: 11px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: nowrap; }
+.motion-demo { flex: 1; height: 2px; background: #2b2d34; overflow: hidden; }
+.motion-demo span { display: block; height: 100%; width: 30%; background: var(--focus); animation: heartbeat 2s linear infinite alternate; }
+@keyframes heartbeat { from { transform: translateX(0); } to { transform: translateX(233%); } }
+.request { padding-left: 40px; }
+.delay-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
+.delay-row label { font-size: 13px; color: var(--muted); }
+.delay-row output { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+input[type=range] { width: 100%; height: 24px; margin: 0; accent-color: var(--focus); cursor: pointer; }
+.request-actions { display: flex; align-items: center; gap: 20px; margin-top: 28px; }
+#request-state { font-size: 12px; color: var(--muted); }
+#request-state.waiting { color: #b6c8f8; }
+.result { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 24px; }
+h3 { font-size: 12px; font-weight: 400; color: var(--muted); margin: 0 0 16px; }
+#result-title { font-size: 14px; margin: 0 0 12px; }
+#result-code { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+@media (max-width: 650px) {
+  header { padding: 0 24px; }
+  main { grid-template-columns: 1fr; padding: 32px 24px; gap: 32px; }
+  .counter { border-right: 0; padding: 0 0 32px; border-bottom: 1px solid var(--line); }
+  .request { padding: 0; }
+  .request-actions { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { .motion-demo span { animation: none; } button { transition: none; } }
+
+main { animation: enter 360ms cubic-bezier(.22,1,.36,1) both; }
+button { transition: background 160ms, border-color 160ms, transform 160ms; }
+button:not(:disabled):active { transform: translateY(1px); }
+input[type=range]::-webkit-slider-thumb { transition: transform 160ms; }
+input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+.result { position: relative; }
+.result::before { content: ''; position: absolute; left: 0; top: -1px; width: 28%; height: 1px; background: var(--focus); opacity: 0; pointer-events: none; }
+body.pending .result::before { animation: request-flow 1400ms cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes request-flow { from { transform: translateX(0); opacity: 0; } 20%, 70% { opacity: 1; } to { transform: translateX(250%); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  button:not(:disabled):active, input[type=range]:hover::-webkit-slider-thumb { transform: none; }
+}

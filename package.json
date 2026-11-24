@@ -1,0 +1,23 @@
+{
+  "name": "relay-ssh-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Electron SSH 薄客户端与独立 Web 服务演示",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "server": "node server/server.cjs",
+    "test": "node --test test/core.test.cjs",
+    "test:ui": "node test/ui.cjs",
+    "start:ssh": "electron . --ssh",
+    "publish:page": "node scripts/publish.cjs",
+    "test:ssh": "node test/ssh-ui.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "electron": "^45.4.1"
+  }
+}
