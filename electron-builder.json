@@ -1,0 +1,18 @@
+{
+  "appId": "io.github.canvasqaq.relay",
+  "productName": "Relay",
+  "directories": { "output": "dist" },
+  "asar": true,
+  "npmRebuild": false,
+  "files": ["electron/**/*.{cjs,js,css,html}", "server/**/*.{cjs,js,css,html}", "package.json"],
+  "artifactName": "Relay-${version}-${os}-${arch}.${ext}",
+  "mac": {
+    "target": ["dmg", "zip"],
+    "category": "public.app-category.developer-tools",
+    "identity": null,
+    "notarize": false
+  },
+  "win": { "target": ["nsis"] },
+  "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true },
+  "publish": null
+}

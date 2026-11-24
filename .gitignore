@@ -21,3 +21,10 @@ connections.json
 connections.json.tmp
 playwright-report/
 test-results/
+
+# Build outputs and local signing material
+dist/
+release/
+electron-builder.env
+preferences.json
+preferences.json.tmp

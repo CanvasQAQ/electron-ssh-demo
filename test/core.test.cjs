@@ -149,3 +149,20 @@ test('跨平台本机用户读取、失败回退及 SSH 用户优先级', async 
   await assert.rejects(connection.connect('ssh', { host: 'example', path: ' ', port: 18765 }), /project path/);
   assert.equal(users.length, 2);
 });
+
+
+test('Theme preferences persist only valid values and recover from damaged files', t => {
+  const fs = require('node:fs'), os = require('node:os'), path = require('node:path');
+  const { Preferences } = require('../electron/preferences.cjs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'relay-theme-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const file = path.join(dir, 'preferences.json');
+  const preferences = new Preferences(file);
+  assert.equal(preferences.theme, 'system');
+  preferences.setTheme('light');
+  assert.equal(new Preferences(file).theme, 'light');
+  assert.throws(() => preferences.setTheme('invalid'));
+  assert.deepEqual(JSON.parse(fs.readFileSync(file)), { theme: 'light' });
+  fs.writeFileSync(file, 'broken');
+  assert.equal(new Preferences(file).theme, 'system');
+});

@@ -2,7 +2,7 @@
   "name": "relay-ssh-demo",
   "version": "0.1.0",
   "private": true,
-  "description": "Electron SSH 薄客户端与独立 Web 服务演示",
+  "description": "Electron SSH thin client with an isolated remote workspace",
   "main": "electron/main.cjs",
   "scripts": {
     "start": "electron .",
@@ -11,13 +11,24 @@
     "test:ui": "node test/ui.cjs",
     "start:ssh": "electron . --ssh",
     "publish:page": "node scripts/publish.cjs",
-    "test:ssh": "node test/ssh-ui.cjs"
+    "test:ssh": "node test/ssh-ui.cjs",
+    "pack": "electron-builder --config electron-builder.json --dir --publish never",
+    "dist:mac": "electron-builder --config electron-builder.json --mac --publish never",
+    "dist:win": "electron-builder --config electron-builder.json --win --publish never"
   },
   "engines": {
     "node": ">=22"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
-    "electron": "^45.4.1"
+    "electron": "^45.4.1",
+    "electron-builder": "26.18.0"
+  },
+  "author": {
+    "name": "CanvasQAQ"
+  },
+  "license": "UNLICENSED",
+  "overrides": {
+    "minimatch@>=7 <11.0.1": "11.0.9"
   }
 }

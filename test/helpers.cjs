@@ -3,7 +3,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 async function launch(profile) {
   fs.mkdirSync(profile, { recursive: true });
-  const app = await electron.launch({ args: [path.join(__dirname, '..')], env: { ...process.env, RELAY_USER_DATA: profile, ELECTRON_RUN_AS_NODE: '' } });
+  const app = await electron.launch({ executablePath: process.env.RELAY_EXECUTABLE || undefined, args: process.env.RELAY_EXECUTABLE ? [] : [path.join(__dirname, '..')], env: { ...process.env, RELAY_USER_DATA: profile, ELECTRON_RUN_AS_NODE: '' } });
   try {
     await expect.poll(() => app.windows().find(p => p.url().endsWith('/shell.html'))).toBeTruthy();
     const shell = app.windows().find(p => p.url().endsWith('/shell.html'));
@@ -12,6 +12,8 @@ async function launch(profile) {
     const floating = app.windows().find(p => p.url().endsWith('/floating.html'));
     await expect.poll(() => app.windows().find(p => !p.url().startsWith('file:'))).toBeTruthy();
     const business = app.windows().find(p => !p.url().startsWith('file:'));
+    // Playwright defaults to emulating light; let Electron own the native theme.
+    await Promise.all([shell, floating, business].map(page => page.emulateMedia({ colorScheme: null })));
     return { app, shell, floating, business };
   } catch (error) { await app.close(); throw error; }
 }

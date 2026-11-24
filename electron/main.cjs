@@ -1,8 +1,9 @@
-const { app, BrowserWindow, WebContentsView, ipcMain, session } = require('electron');
+const { app, BrowserWindow, WebContentsView, ipcMain, session, nativeTheme } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { Connection, validateTarget, destination, localUsername } = require('./connection.cjs');
 const { History } = require('./history.cjs');
+const { Preferences } = require('./preferences.cjs');
 
 app.setName('Relay · SSH Client');
 app.enableSandbox();
@@ -12,6 +13,9 @@ app.setPath('userData', process.env.RELAY_USER_DATA
   ? path.resolve(process.env.RELAY_USER_DATA)
   : path.join(app.getPath('appData'), 'Relay · SSH 薄客户端'));
 const detectedUser = localUsername();
+const preferences = new Preferences(path.join(app.getPath('userData'), 'preferences.json'));
+nativeTheme.themeSource = preferences.theme;
+const windowBackground = () => nativeTheme.shouldUseDarkColors ? '#101114' : '#f5f6f8';
 let win, business, floating, connection, history, quitting = false;
 let pageHTTPError = '';
 let screen = 'connection', phase = 'idle', error = '', warning = '', busy = false, expanded = false;
@@ -25,14 +29,14 @@ const defaults = validateTarget({
   port: Number(process.env.RELAY_BACKEND_PORT || 18765), startService: true
 }, { requirePath: false });
 function snapshot() {
-  return { ...connection.state, localUser: detectedUser, screen, phase, error, warning, busy, expanded,
+  return { ...connection.state, theme: preferences.theme, localUser: detectedUser, screen, phase, error, warning, busy, expanded,
     target: connection.target || defaults, history: history.records, defaults: history.records[0] || defaults };
 }
 function layout() {
   if (!win || win.isDestroyed() || !business || !floating) return;
   const [width, height] = win.getContentSize();
   business.setBounds({ x: 0, y: 0, width, height });
-  const cardWidth = expanded ? 336 : 56, cardHeight = expanded ? 272 : 56;
+  const cardWidth = expanded ? 336 : 56, cardHeight = expanded ? 312 : 56;
   floating.setBounds({ x: width - cardWidth - 16, y: height - cardHeight - 16, width: cardWidth, height: cardHeight });
   business.setVisible(screen === 'workspace');
   floating.setVisible(screen === 'workspace');
@@ -100,7 +104,7 @@ app.whenReady().then(async () => {
     callback({ cancel: !allowed });
   });
   const localPreferences = { preload: path.join(__dirname, 'preload.cjs'), nodeIntegration: false, contextIsolation: true, sandbox: true };
-  win = new BrowserWindow({ width: 1240, height: 850, minWidth: 760, minHeight: 640, backgroundColor: '#101114', title: 'Connect to a host', webPreferences: localPreferences });
+  win = new BrowserWindow({ width: 1240, height: 850, minWidth: 760, minHeight: 640, backgroundColor: windowBackground(), title: 'Connect to a host', webPreferences: localPreferences });
   business = new WebContentsView({ webPreferences: { session: remoteSession, nodeIntegration: false, contextIsolation: true, sandbox: true } });
   floating = new WebContentsView({ webPreferences: localPreferences });
   floating.setBackgroundColor('#00000000');
@@ -111,14 +115,21 @@ app.whenReady().then(async () => {
   lockContents(floating.webContents, url => url === floatURL);
   lockContents(business.webContents, url => { try { return new URL(url).origin === connection.state.url; } catch { return false; } });
   win.on('resize', layout);
+  nativeTheme.on('updated', () => {
+    if (win && !win.isDestroyed()) { win.setBackgroundColor(windowBackground()); sendState(); }
+  });
   layout();
-  const shellActions = new Set(['state', 'connect']);
-  const floatActions = new Set(['state', 'disconnect', 'reconnect', 'switch', 'refresh', 'expand', 'stop', 'publish']);
+  const shellActions = new Set(['state', 'connect', 'theme']);
+  const floatActions = new Set(['state', 'theme', 'disconnect', 'reconnect', 'switch', 'refresh', 'expand', 'stop', 'publish']);
   ipcMain.handle('relay:action', async (event, action, payload) => {
     const fromShell = event.sender === win.webContents && event.senderFrame === win.webContents.mainFrame && event.senderFrame.url === shellURL;
     const fromFloat = event.sender === floating.webContents && event.senderFrame === floating.webContents.mainFrame && event.senderFrame.url === floatURL;
     if (!(fromShell && shellActions.has(action)) && !(fromFloat && floatActions.has(action))) throw new Error('Untrusted caller or action.');
     if (action === 'state') return snapshot();
+    if (action === 'theme') {
+      preferences.setTheme(payload); nativeTheme.themeSource = preferences.theme;
+      win.setBackgroundColor(windowBackground()); sendState(); return snapshot();
+    }
     if (action === 'expand') { expanded = payload === true; sendState(); return snapshot(); }
     if (busy) throw new Error('A connection operation is in progress.');
     busy = true; error = ''; sendState();

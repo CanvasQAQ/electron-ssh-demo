@@ -2,6 +2,7 @@ const $ = id => document.getElementById(id);
 let state;
 function render(next) {
   state = next;
+  $('theme').value = state.theme;
   const status = state.busy ? state.phase : (state.error ? 'error' : state.status);
   $('host-label').textContent = state.mode === 'local' ? 'Local demo' : (state.target.user ? `${state.target.user}@${state.target.host}` : state.target.host);
   $('host-label').title = $('host-label').textContent;
@@ -34,3 +35,5 @@ for (const name of ['reconnect', 'disconnect', 'switch', 'refresh', 'stop', 'pub
 $('launcher').onclick = () => action('expand', true);
 $('collapse').onclick = () => action('expand', false);
 document.addEventListener('keydown', event => { if (event.key === 'Escape') action('expand', false); });
+
+$('theme').onchange = () => action('theme', $('theme').value);

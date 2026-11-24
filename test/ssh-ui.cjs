@@ -16,6 +16,7 @@ const ssh = command => execFileSync('ssh', ['-p', String(target.sshPort), '-o', 
   process.env.RELAY_SSH_HOST = target.host;
   process.env.RELAY_SSH_PORT = String(target.sshPort);
   process.env.RELAY_BACKEND_PORT = String(target.port);
+  fs.mkdirSync(path.join(__dirname, '../work'), { recursive: true });
   const profile = fs.mkdtempSync(path.join(__dirname, '../work/ssh-profile-'));
   let current = await launch(profile), passed = false;
   try {

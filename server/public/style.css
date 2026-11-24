@@ -60,3 +60,13 @@ body.pending .result::before { animation: request-flow 1400ms cubic-bezier(.4,0,
   *, *::before, *::after { animation: none !important; transition: none !important; }
   button:not(:disabled):active, input[type=range]:hover::-webkit-slider-thumb { transform: none; }
 }
+
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; color: #202631; background: #f5f6f8; --muted: #596373; --line: #d5dae2; --focus: #355fc4; }
+  button { background: #e9edf3; color: #202631; border-color: #cbd3df; }
+  button:hover { background: #dce4ef; }
+  button.primary { background: #242c39; color: #fff; border-color: #242c39; }
+  button.primary:hover { background: #101722; }
+  .motion-demo { background: #d5dae2; }
+  #request-state.waiting { color: #355fc4; }
+}

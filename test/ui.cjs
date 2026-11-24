@@ -3,13 +3,20 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 (async () => {
+  fs.mkdirSync(path.join(__dirname, '../work'), { recursive: true });
   const profile = fs.mkdtempSync(path.join(__dirname, '../work/ui-profile-'));
   const { app, shell, floating, business } = await launch(profile);
   try {
     assert.equal((await state(shell)).screen, 'connection');
     assert.equal((await state(shell)).status, 'idle');
     assert.ok((await nativeLayout(app)).children.filter(v => v.url !== shell.url()).every(v => !v.visible));
-    await expect(shell.locator('header')).toHaveText('Connect to a host');
+    await expect(shell.locator('h1')).toHaveText('Connect to a host');
+    await shell.locator('#theme').selectOption('light');
+    await expect.poll(() => shell.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches)).toBe(true);
+    assert.equal((await state(shell)).theme, 'light');
+    await shell.reload();
+    await expect(shell.locator('#theme')).toHaveValue('light');
+    await assert.rejects(shell.evaluate(() => window.relay.action('theme', 'invalid')), /Unknown theme/);
     await expect(shell.locator('#host')).toHaveValue('example.com');
     await expect(shell.locator('#user')).toHaveValue('');
     await expect(shell.locator('#user')).toHaveAttribute('placeholder', require('node:os').userInfo().username);
@@ -49,6 +56,12 @@ const path = require('node:path');
     assert.equal((await state(shell)).pathReceived, true);
     assert.equal((await state(shell)).target.path, '/项目 with spaces/$(id);&?#');
     await expect(business.locator('#increment')).toBeVisible();
+    await expect.poll(() => business.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches)).toBe(true);
+    await expand(floating);
+    await floating.locator('#theme').selectOption('dark');
+    await expect.poll(() => business.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches)).toBe(true);
+    await expect(shell.locator('#theme')).toHaveValue('dark');
+    await floating.locator('#collapse').click();
     let layout = await nativeLayout(app);
     const remote = layout.children.find(v => v.url?.startsWith('http:'));
     const card = layout.children.at(-1);
@@ -118,4 +131,11 @@ const path = require('node:path');
     assert.ok((await nativeLayout(app)).children.filter(v => v.url !== shell.url()).every(v => !v.visible));
     console.log('PASS UI: 初始不自动连接、页面加载失败不收起、加载门控、全窗口业务页、默认56px原生视图/48px小球、展开/关闭/Escape收起、相邻远端点击、顶层右下角浮层、慢 API、发布刷新、断线重连、切换主机、窗口缩放、权限隔离');
   } finally { await app.close(); }
+  const restarted = await launch(profile);
+  try {
+    await expect(restarted.shell.locator('#theme')).toHaveValue('dark');
+    await expect.poll(() => restarted.shell.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches)).toBe(true);
+    await restarted.shell.locator('#theme').selectOption('system');
+    await expect.poll(() => restarted.app.evaluate(({ nativeTheme }) => nativeTheme.themeSource)).toBe('system');
+  } finally { await restarted.app.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

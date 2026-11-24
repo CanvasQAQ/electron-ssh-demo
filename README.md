@@ -27,6 +27,29 @@ Defaults can be set through `RELAY_SSH_HOST`, `RELAY_SSH_PORT`, and `RELAY_BACKE
 
 The local history contains only host, user, path, ports, the service-start option, and a timestamp. It stores no passwords or private keys. History remains in the operating system's application-data directory, outside the source checkout. The application keeps its legacy profile directory name for compatibility.
 
+## Appearance
+
+Choose **System**, **Light**, or **Dark** in the connection form or expanded floating control. The choice is saved locally and applies to the form, controls, and demo workspace. System follows the operating system. Remote applications can follow the same setting through the standard `prefers-color-scheme` CSS media query; they receive no extra Electron privileges.
+
+## Desktop packages
+
+```sh
+npm ci
+npm run pack
+npm run dist:mac -- --arm64
+npm run dist:mac -- --x64
+npm run dist:win -- --x64
+node scripts/check-package.cjs
+```
+
+Run macOS builds on macOS and Windows builds on Windows. Outputs go to ignored `dist/`: a `.app`, DMG and ZIP on macOS, or a per-user NSIS installer on Windows. OpenSSH is a system prerequisite for remote connections; the local demo needs no separate Node installation.
+
+These are unsigned development packages, without Apple notarization or Windows Authenticode signing. The operating system may warn or block launch. Signing identities and certificates are deliberately not stored in the repository. There is no automatic updater.
+
+The build includes only runtime files under `electron/`, `server/`, and package metadata. Development dependencies, tests, connection history, preferences, environment files, and screenshots are excluded. `scripts/check-package.cjs` inspects the actual ASAR archive against this allowlist. A pinned override keeps the build tool's affected `minimatch` dependencies on a patched version.
+
+GitHub Actions tests and builds macOS Apple Silicon, macOS Intel, and Windows x64 on pushes to `main`, version tags, pull requests, and manual runs. Download the installer from a successful run's **Artifacts** section. Artifacts expire after 14 days; the workflow does not automatically publish a GitHub Release.
+
 ## Backend and path acknowledgement
 
 The backend listens only on `127.0.0.1`. For a simple remote deployment, copy `server/` into a dedicated directory on your server and run:
@@ -80,7 +103,7 @@ npm test
 npm run test:ui
 ```
 
-The core tests cover server behaviour, lifecycle, SSH arguments, history, path acknowledgement, and local username fallback. The Electron tests cover required paths, page-load failures, view layout, floating controls, delayed requests, publishing, reconnecting, and renderer isolation.
+The core tests cover server behaviour, lifecycle, SSH arguments, history, path acknowledgement, local username fallback, and theme preferences. The Electron tests cover native theme switching, required paths, page-load failures, view layout, floating controls, delayed requests, publishing, reconnecting, and renderer isolation.
 
 Real SSH tests are explicitly opt-in and require a **dedicated test service**. They stop and restart `relay-demo.service`, so do not point them at a shared application:
 
@@ -93,7 +116,7 @@ npm run test:ssh
 
 Optional test settings: `RELAY_TEST_SSH_PORT`, `RELAY_TEST_BACKEND_PORT`, and `RELAY_TEST_HOSTNAME`. Test profiles are isolated under ignored `work/`. All hostnames, addresses, users, and paths shown here are examples.
 
-Validated on macOS with a Linux backend. Windows uses cross-platform code paths but has not been tested on a physical Windows machine. Packaging, signing, automatic updates, production authentication/authorization, and long-running network fault testing are outside this demo's scope.
+Validated locally on macOS with a Linux backend. GitHub Actions also exercises the local demo on Windows; real Windows-to-Linux SSH connections still require manual verification. Signing, automatic updates, production authentication/authorization, and long-running network fault testing are outside this demo's scope.
 
 ## Publishing this repository
 

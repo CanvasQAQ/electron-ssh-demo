@@ -43,3 +43,21 @@ button { transition: background 160ms, border-color 160ms; }
 #launcher:hover svg { transform: translateY(-1px); }
 @keyframes card-enter { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } #launcher:hover svg { transform: none; } }
+
+.theme-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+#theme { font: inherit; color: #a3a6b0; background: transparent; border: 1px solid #353842; border-radius: 6px; padding: 4px; }
+#theme:focus-visible { outline: 2px solid #86a7fa; outline-offset: 2px; }
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; color: #202631; }
+  .float-card { background: #f7f8fa; border-color: #cbd3df; }
+  .identity span, .address code, .more, #theme { color: #5c6879; }
+  button, #theme { background: #edf0f5; color: #273447; border-color: #cbd3df; }
+  button:hover { background: #e0e7f0; }
+  #detail { color: #526074; }
+  #extra { border-color: #d5dae2; }
+  #warning { color: #875618; }
+  #launcher { background: #f5f7fbd9; color: #3c4b62; border-color: #94a3b8; }
+  #launcher:hover { background: #fff; }
+  .signal { border-color: #f5f7fb; background: #4269bd; }
+  .orb.online { background: #4269bd; }
+}

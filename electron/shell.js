@@ -17,6 +17,7 @@ function setMode() {
   $('connect-label').textContent = local ? 'Open demo' : 'Connect';
 }
 function render(state) {
+  $('theme').value = state.theme;
   if (!initialized) { useTarget(state.defaults); initialized = true; }
   $('user').placeholder = state.localUser || 'SSH default';
   if (previousScreen === 'workspace' && state.screen === 'connection') {
@@ -64,4 +65,9 @@ $('connect-form').onsubmit = async event => {
     if (!$('path').value.trim()) { $('error').textContent = 'Enter a project path.'; $('error').hidden = false; $('path').focus(); return; }
     render(await window.relay.action('connect', { mode: $('mode').value, target: { host: $('host').value.trim(), user: $('user').value.trim(), path: $('path').value, port: Number($('port').value), sshPort: Number($('ssh-port').value), startService: $('start-service').checked } }));
   } catch (error) { $('error').textContent = error.message; $('error').hidden = false; }
+};
+
+$('theme').onchange = async () => {
+  try { render(await window.relay.action('theme', $('theme').value)); }
+  catch (error) { $('error').textContent = error.message; $('error').hidden = false; }
 };

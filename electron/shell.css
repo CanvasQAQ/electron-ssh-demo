@@ -103,3 +103,24 @@ details[open] .settings { animation: enter 200ms cubic-bezier(.22,1,.36,1) both;
   *, *::before, *::after { animation: none !important; transition: none !important; }
   button:not(:disabled):active, .history-item:hover .arrow { transform: none; }
 }
+
+header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+header #theme { width: auto; height: 32px; background: transparent; color: var(--muted); border-color: transparent; font-size: 12px; }
+header #theme:hover { border-color: var(--line); }
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; color: #202631; background: #f5f6f8; --muted: #596373; --line: #d5dae2; --focus: #355fc4; }
+  .ambient { background: #f3f5f8; }
+  .ambient::before { opacity: .3; }
+  .ambient::after { opacity: .25; }
+  input:not([type=checkbox]), select { background: #fff; color: #202631; }
+  input::placeholder { color: #6b7585; }
+  .connect-row { background: #ffffffdb; border-color: #cbd3df; }
+  .connect-row label span { color: #687385; }
+  .connect-row .user-field input { color: #4f5b6b; }
+  input:not([type=checkbox]):focus { background: #edf2fa; }
+  button.primary { background: #242c39; color: #fff; }
+  button.primary:hover { background: #101722; }
+  .history-item { color: #343f50; }
+  .history-item:hover { background: #e7edf5; }
+  .error { color: #a42d28; }
+}
