@@ -41,6 +41,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run test:ui
+        env:
+          DEBUG: pw:browser
         if: matrix.arch == 'arm64' || matrix.platform == 'win'
       - run: npm run dist:${{ matrix.platform }} -- --${{ matrix.arch }}
       - run: node scripts/check-package.cjs

@@ -3,7 +3,9 @@ const path = require('node:path');
 const fs = require('node:fs');
 async function launch(profile) {
   fs.mkdirSync(profile, { recursive: true });
-  const app = await electron.launch({ executablePath: process.env.RELAY_EXECUTABLE || undefined, args: process.env.RELAY_EXECUTABLE ? [] : [path.join(__dirname, '..')], env: { ...process.env, RELAY_USER_DATA: profile, ELECTRON_RUN_AS_NODE: '' } });
+  const env = { ...process.env, RELAY_USER_DATA: profile };
+  delete env.ELECTRON_RUN_AS_NODE;
+  const app = await electron.launch({ executablePath: process.env.RELAY_EXECUTABLE || undefined, args: process.env.RELAY_EXECUTABLE ? [] : [path.join(__dirname, '..')], env });
   try {
     await expect.poll(() => app.windows().find(p => p.url().endsWith('/shell.html'))).toBeTruthy();
     const shell = app.windows().find(p => p.url().endsWith('/shell.html'));
