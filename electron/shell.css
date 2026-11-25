@@ -110,8 +110,12 @@ header #theme:hover { border-color: var(--line); }
 @media (prefers-color-scheme: light) {
   :root { color-scheme: light; color: #202631; background: #f5f6f8; --muted: #596373; --line: #d5dae2; --focus: #355fc4; }
   .ambient { background: #f3f5f8; }
-  .ambient::before { opacity: .3; }
-  .ambient::after { opacity: .25; }
+  .ambient::before {
+    background: radial-gradient(ellipse 48% 40% at 22% 58%, #6c9fe06b, #8bb8e833 48%, transparent 78%);
+  }
+  .ambient::after {
+    background: radial-gradient(ellipse 40% 54% at 78% 40%, #63b9b866, #90d0c938 48%, transparent 78%);
+  }
   input:not([type=checkbox]), select { background: #fff; color: #202631; }
   input::placeholder { color: #6b7585; }
   .connect-row { background: #ffffffdb; border-color: #cbd3df; }
