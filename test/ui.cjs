@@ -118,9 +118,14 @@ const path = require('node:path');
     assert.equal((await state(shell)).screen, 'workspace');
     await floating.locator('#reconnect').click(); await ready(shell);
     await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].setContentSize(800, 650));
-    layout = await nativeLayout(app);
-    assert.deepEqual(layout.children.find(v => v.url?.startsWith('http:')).bounds, { x: 0, y: 0, width: 800, height: 650 });
-    assert.equal(layout.children.at(-1).bounds.x, 728);
+    // The window manager may constrain the requested size to the runner's display.
+    await expect.poll(async () => {
+      layout = await nativeLayout(app);
+      const bounds = layout.children.find(v => v.url?.startsWith('http:')).bounds;
+      return bounds.width === layout.size[0] && bounds.height === layout.size[1];
+    }).toBe(true);
+    assert.deepEqual(layout.children.find(v => v.url?.startsWith('http:')).bounds, { x: 0, y: 0, width: layout.size[0], height: layout.size[1] });
+    assert.equal(layout.children.at(-1).bounds.x, layout.size[0] - 72);
     await expand(floating);
     const allowedURL = `${(await state(shell)).url}/`;
     await business.evaluate(() => { location.href = 'http://example.invalid/'; });

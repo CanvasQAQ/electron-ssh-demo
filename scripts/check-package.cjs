@@ -15,7 +15,7 @@ const expected = ['package.json', ...['electron', 'server'].flatMap(dir => files
 const archives = files(path.join(root, 'dist')).filter(file => file.endsWith(`${path.sep}app.asar`));
 assert.ok(archives.length, 'No packaged app.asar found.');
 for (const archive of archives) {
-  const actual = asar.listPackage(archive).map(file => file.replace(/^[/\\]/, '')).filter(file => !asar.statFile(archive, file).files).sort();
+  const actual = asar.listPackage(archive).map(file => file.replace(/^[/\\]/, '')).filter(file => !asar.statFile(archive, file).files).map(file => file.split(path.sep).join('/')).sort();
   assert.deepEqual(actual, expected, 'Archive differs from the runtime source allowlist.');
   const metadata = JSON.parse(asar.extractFile(archive, 'package.json').toString());
   assert.equal(metadata.main, 'electron/main.cjs');
