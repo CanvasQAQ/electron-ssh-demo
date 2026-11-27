@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Flow Monitor · Testbenches</title>
+  <link rel="stylesheet" href="/testbench/style.css">
+  <script type="module" src="/testbench/app.js"></script>
+</head>
+<body>
+  <div class="demo-bar" aria-label="Demo controls">
+    <span class="demo-label">Demo</span>
+    <button id="playback" aria-label="Pause demo"></button>
+    <button id="advance" aria-label="Advance one step" title="Advance one step"></button>
+    <button id="replay" aria-label="Replay demo" title="Replay demo"></button>
+    <span class="divider"></span>
+    <select id="speed" aria-label="Playback speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select>
+    <label class="loop"><input id="loop" type="checkbox" checked>Loop</label>
+    <span class="demo-note">Synthetic data · Local demo</span>
+  </div>
+  <header class="app-header"><strong>Flow Monitor</strong><span class="slash">/</span><span class="run-id">demo-run-001</span></header>
+  <main>
+    <div class="page-title"><h1>Testbenches <span>8</span></h1><button id="start-all" class="primary">Run enabled</button></div>
+    <div class="mode-bar">
+      <div class="mode-context"><span id="mode-name">Pipelines</span><span id="mode-hint">Click a node to view logs</span></div>
+      <div class="mode-actions"><kbd title="Hold Ctrl or Option to edit">Ctrl / ⌥</kbd><button id="edit" aria-pressed="false">Edit steps</button></div>
+    </div>
+    <div class="table-scroll" role="region" aria-label="Testbench pipelines" tabindex="0">
+      <div class="flow-table" role="table" aria-label="Testbenches">
+        <div class="table-head table-grid" role="row">
+          <div class="en-cell left-sticky" role="columnheader"><span>EN</span><input id="enable-all" type="checkbox" aria-label="Enable all Testbenches" title="Enable all Testbenches" checked></div>
+          <div class="name-cell left-sticky" role="columnheader">Testbench</div>
+          <div id="stage-head" class="stage-head" role="columnheader" aria-label="Stages"></div>
+          <div class="action-cell right-sticky" role="columnheader">Action</div>
+          <div class="corners-cell right-sticky" role="columnheader">Corners</div>
+          <div class="report-cell right-sticky" role="columnheader">Report</div>
+        </div>
+        <div id="rows" role="rowgroup"></div>
+      </div>
+    </div>
+    <div class="legend" id="legend" aria-label="Status legend"></div>
+    <div class="selection-legend"><span class="line-sample"></span>Run <span class="bypass-sample">⌣</span>Bypass <span class="override-sample"></span>Override</div>
+    <section class="inspector" id="inspector" aria-label="Details">
+      <header class="inspector-head"><div><span id="detail-kind">Logs</span><span id="detail-title"></span></div><div class="inspector-actions"><button id="retry" hidden>Rerun stage</button><button id="diagnose" hidden>AI analysis</button><button id="close-detail" aria-label="Close details" title="Close details"></button></div></header>
+      <div id="detail-content"></div>
+    </section>
+    <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>

@@ -15,6 +15,12 @@ The app opens the connection form without connecting automatically. The default 
 
 To try the local demo, open **Connection settings**, choose **Local demo**, enter a project path, and click **Open demo**. No remote host is contacted in this mode.
 
+## Testbench monitor prototype
+
+Run `npm run server`, then open `http://127.0.0.1:8080/testbench/` in a browser. This separate prototype uses entirely fictional names, statuses, logs, corners, and reports. All controls simulate local state; they do not connect to SSH or run real testbenches. The existing Electron workspace remains at `/`.
+
+Click a stage to inspect its log. **Edit steps** enables stage selection; holding **Ctrl** or **Option** temporarily enables editing. The **EN** checkbox enables or disables an entire row while preserving its individual stage selections and history. Row actions simulate execution, while **Corners** and **Report** open within the page. Demo controls sit at the top.
+
 ## Connection form
 
 - **Host**: a DNS name, IPv4 address, or SSH alias. IPv6 literals are not supported yet.
@@ -104,6 +110,8 @@ npm run test:ui
 ```
 
 The core tests cover server behaviour, lifecycle, SSH arguments, history, path acknowledgement, local username fallback, and theme preferences. The Electron tests cover native theme switching, required paths, page-load failures, view layout, floating controls, delayed requests, publishing, reconnecting, and renderer isolation.
+
+The testbench tests are included in `npm test`. They check routes and security headers, preserved stage selections and execution history, EN pause/resume, skipped and blocked stages, replay, and report availability.
 
 Real SSH tests are explicitly opt-in and require a **dedicated test service**. They stop and restart `relay-demo.service`, so do not point them at a shared application:
 

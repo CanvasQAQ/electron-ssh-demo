@@ -5,6 +5,10 @@ const path = require('node:path');
 function createServer({ version = 1 } = {}) {
   let currentVersion = version;
   const files = { '/': ['index.html', 'text/html; charset=utf-8'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'] };
+  for (const [file, type] of [['index.html', 'text/html; charset=utf-8'], ['style.css', 'text/css'], ['app.js', 'text/javascript'], ['model.js', 'text/javascript']]) {
+    files[`/testbench/${file}`] = [`testbench/${file}`, type];
+  }
+  files['/testbench/'] = files['/testbench/index.html'];
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (process.env.DEMO_VERSION_FILE) {
